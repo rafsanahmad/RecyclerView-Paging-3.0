@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import com.rafsan.recyclerviewpaging.Injection
 import com.rafsan.recyclerviewpaging.databinding.ActivitySearchRepositoriesBinding
 import com.rafsan.recyclerviewpaging.model.RepoSearchResult
+import kotlinx.coroutines.flow.StateFlow
 
 class SearchRepositoriesActivity : AppCompatActivity() {
 
@@ -53,7 +54,7 @@ class SearchRepositoriesActivity : AppCompatActivity() {
      * and allows the UI to feed back user actions to it.
      */
     private fun ActivitySearchRepositoriesBinding.bindState(
-        uiState: LiveData<UiState>,
+        uiState: StateFlow<UiState>,
         uiActions: (UiAction) -> Unit
     ) {
         val repoAdapter = ReposAdapter()
@@ -71,7 +72,7 @@ class SearchRepositoriesActivity : AppCompatActivity() {
     }
 
     private fun ActivitySearchRepositoriesBinding.bindSearch(
-        uiState: LiveData<UiState>,
+        uiState: StateFlow<UiState>,
         onQueryChanged: (UiAction.Search) -> Unit
     ) {
         searchRepo.setOnEditorActionListener { _, actionId, _ ->
