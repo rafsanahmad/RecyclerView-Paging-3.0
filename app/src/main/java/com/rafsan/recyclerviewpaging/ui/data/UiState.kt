@@ -5,7 +5,7 @@
  *
  */
 
-package com.rafsan.recyclerviewpaging.ui
+package com.rafsan.recyclerviewpaging.ui.data
 
 import androidx.paging.PagingData
 import com.rafsan.recyclerviewpaging.model.Repo

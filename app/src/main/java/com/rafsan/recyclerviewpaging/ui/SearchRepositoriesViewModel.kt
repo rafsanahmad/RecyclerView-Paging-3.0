@@ -14,6 +14,8 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.rafsan.recyclerviewpaging.data.GithubRepository
 import com.rafsan.recyclerviewpaging.model.Repo
+import com.rafsan.recyclerviewpaging.ui.data.UiAction
+import com.rafsan.recyclerviewpaging.ui.data.UiState
 import com.rafsan.recyclerviewpaging.utils.DEFAULT_QUERY
 import com.rafsan.recyclerviewpaging.utils.LAST_QUERY_SCROLLED
 import com.rafsan.recyclerviewpaging.utils.LAST_SEARCH_QUERY

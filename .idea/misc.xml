@@ -6,6 +6,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.16802536231884058" />
         <entry key="app/src/main/res/layout/activity_search_repositories.xml" value="0.1213768115942029" />
         <entry key="app/src/main/res/layout/repo_view_item.xml" value="0.13072916666666667" />
+        <entry key="app/src/main/res/layout/repos_load_state_footer_view_item.xml" value="0.15670289855072464" />
       </map>
     </option>
   </component>

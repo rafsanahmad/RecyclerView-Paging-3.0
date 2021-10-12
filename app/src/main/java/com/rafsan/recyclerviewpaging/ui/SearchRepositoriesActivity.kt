@@ -19,6 +19,10 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.rafsan.recyclerviewpaging.Injection
 import com.rafsan.recyclerviewpaging.databinding.ActivitySearchRepositoriesBinding
+import com.rafsan.recyclerviewpaging.ui.adapter.ReposAdapter
+import com.rafsan.recyclerviewpaging.ui.adapter.ReposLoadStateAdapter
+import com.rafsan.recyclerviewpaging.ui.data.UiAction
+import com.rafsan.recyclerviewpaging.ui.data.UiState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -54,7 +58,10 @@ class SearchRepositoriesActivity : AppCompatActivity() {
         uiActions: (UiAction) -> Unit
     ) {
         val repoAdapter = ReposAdapter()
-        list.adapter = repoAdapter
+        list.adapter = repoAdapter.withLoadStateHeaderAndFooter(
+            header = ReposLoadStateAdapter { repoAdapter.retry() },
+            footer = ReposLoadStateAdapter { repoAdapter.retry() }
+        )
 
         bindSearch(
             uiState = uiState,

@@ -1,11 +1,11 @@
 /*
  * *
- *  * Created by Rafsan Ahmad on 10/11/21, 5:44 PM
+ *  * Created by Rafsan Ahmad on 10/12/21, 10:21 AM
  *  * Copyright (c) 2021 . All rights reserved.
  *
  */
 
-package com.rafsan.recyclerviewpaging.ui
+package com.rafsan.recyclerviewpaging.ui.adapter
 
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
