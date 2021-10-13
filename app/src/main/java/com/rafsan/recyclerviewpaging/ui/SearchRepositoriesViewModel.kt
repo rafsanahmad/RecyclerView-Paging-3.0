@@ -14,7 +14,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.insertSeparators
 import androidx.paging.map
-import com.rafsan.recyclerviewpaging.data.GithubRepository
+import com.rafsan.recyclerviewpaging.network.GithubRepository
 import com.rafsan.recyclerviewpaging.ui.data.UiAction
 import com.rafsan.recyclerviewpaging.ui.data.UiModel
 import com.rafsan.recyclerviewpaging.ui.data.UiState

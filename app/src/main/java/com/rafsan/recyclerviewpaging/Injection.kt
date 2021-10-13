@@ -7,10 +7,12 @@
 
 package com.rafsan.recyclerviewpaging
 
+import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import androidx.savedstate.SavedStateRegistryOwner
 import com.rafsan.recyclerviewpaging.api.GithubService
-import com.rafsan.recyclerviewpaging.data.GithubRepository
+import com.rafsan.recyclerviewpaging.db.RepoDatabase
+import com.rafsan.recyclerviewpaging.network.GithubRepository
 import com.rafsan.recyclerviewpaging.ui.ViewModelFactory
 
 /**
@@ -20,19 +22,11 @@ import com.rafsan.recyclerviewpaging.ui.ViewModelFactory
  */
 object Injection {
 
-    /**
-     * Creates an instance of [GithubRepository] based on the [GithubService] and a
-     * [GithubLocalCache]
-     */
-    private fun provideGithubRepository(): GithubRepository {
-        return GithubRepository(GithubService.create())
+    private fun provideGithubRepository(context: Context): GithubRepository {
+        return GithubRepository(GithubService.create(), RepoDatabase.getInstance(context))
     }
 
-    /**
-     * Provides the [ViewModelProvider.Factory] that is then used to get a reference to
-     * [ViewModel] objects.
-     */
-    fun provideViewModelFactory(owner: SavedStateRegistryOwner): ViewModelProvider.Factory {
-        return ViewModelFactory(owner, provideGithubRepository())
+    fun provideViewModelFactory(context: Context, owner: SavedStateRegistryOwner): ViewModelProvider.Factory {
+        return ViewModelFactory(owner, provideGithubRepository(context))
     }
 }

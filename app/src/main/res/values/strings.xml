@@ -13,4 +13,6 @@
     <string name="no_results">No results 😓</string>
     <string name="unknown">\?</string>
     <string name="retry">Retry</string>
+    <string name="paging_from_network">Paging from network</string>
+    <string name="paging_from_network_database"><![CDATA[Paging from network & database]]></string>
 </resources>

@@ -11,7 +11,7 @@ import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
-import com.rafsan.recyclerviewpaging.data.GithubRepository
+import com.rafsan.recyclerviewpaging.network.GithubRepository
 
 /**
  * Factory for ViewModels

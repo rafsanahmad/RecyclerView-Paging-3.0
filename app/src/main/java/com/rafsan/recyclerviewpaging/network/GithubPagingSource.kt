@@ -5,20 +5,20 @@
  *
  */
 
-package com.rafsan.recyclerviewpaging.data
+package com.rafsan.recyclerviewpaging.network
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.rafsan.recyclerviewpaging.api.GithubService
 import com.rafsan.recyclerviewpaging.api.IN_QUALIFIER
-import com.rafsan.recyclerviewpaging.data.GithubRepository.Companion.NETWORK_PAGE_SIZE
 import com.rafsan.recyclerviewpaging.model.Repo
+import com.rafsan.recyclerviewpaging.utils.GITHUB_STARTING_PAGE_INDEX
+import com.rafsan.recyclerviewpaging.utils.NETWORK_PAGE_SIZE
 import retrofit2.HttpException
 import java.io.IOException
 
-// GitHub page API is 1 based: https://developer.github.com/v3/#pagination
-private const val GITHUB_STARTING_PAGE_INDEX = 1
 
+// GitHub page API is 1 based: https://developer.github.com/v3/#pagination
 class GithubPagingSource(
     private val service: GithubService,
     private val query: String
