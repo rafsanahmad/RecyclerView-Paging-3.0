@@ -8,12 +8,11 @@
 package com.rafsan.recyclerviewpaging.ui.data
 
 import androidx.paging.PagingData
-import com.rafsan.recyclerviewpaging.model.Repo
 import com.rafsan.recyclerviewpaging.utils.DEFAULT_QUERY
 
 data class UiState(
     val query: String = DEFAULT_QUERY,
     val lastQueryScrolled: String = DEFAULT_QUERY,
     val hasNotScrolledForCurrentSearch: Boolean = false,
-    val pagingData: PagingData<Repo> = PagingData.empty()
+    val pagingData: PagingData<UiModel> = PagingData.empty()
 )
