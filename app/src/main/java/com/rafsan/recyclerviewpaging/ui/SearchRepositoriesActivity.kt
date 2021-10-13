@@ -10,6 +10,7 @@ package com.rafsan.recyclerviewpaging.ui
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
@@ -62,7 +63,6 @@ class SearchRepositoriesActivity : AppCompatActivity() {
             header = ReposLoadStateAdapter { repoAdapter.retry() },
             footer = ReposLoadStateAdapter { repoAdapter.retry() }
         )
-
         bindSearch(
             uiState = uiState,
             onQueryChanged = uiActions
@@ -122,7 +122,6 @@ class SearchRepositoriesActivity : AppCompatActivity() {
                 if (dy != 0) onScrollChanged(UiAction.Scroll(currentQuery = uiState.value.query))
             }
         })
-
         val notLoading = repoAdapter.loadStateFlow
             // Only emit when REFRESH LoadState for RemoteMediator changes.
             .distinctUntilChangedBy { it.refresh }
@@ -156,10 +155,33 @@ class SearchRepositoriesActivity : AppCompatActivity() {
                     if (shouldScroll) list.scrollToPosition(0)
                 }
         }
-    }
 
-    private fun ActivitySearchRepositoriesBinding.showEmptyList(show: Boolean) {
-        emptyList.isVisible = show
-        list.isVisible = !show
+        lifecycleScope.launch {
+            repoAdapter.loadStateFlow.collect { loadState ->
+                val isListEmpty =
+                    loadState.refresh is LoadState.NotLoading && repoAdapter.itemCount == 0
+                // show empty list
+                emptyList.isVisible = isListEmpty
+                // Only show the list if refresh succeeds.
+                list.isVisible = !isListEmpty
+                // Show loading spinner during initial load or refresh.
+                progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                // Show the retry state if initial load or refresh fails.
+                retryButton.isVisible = loadState.source.refresh is LoadState.Error
+
+                // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
+                val errorState = loadState.source.append as? LoadState.Error
+                    ?: loadState.source.prepend as? LoadState.Error
+                    ?: loadState.append as? LoadState.Error
+                    ?: loadState.prepend as? LoadState.Error
+                errorState?.let {
+                    Toast.makeText(
+                        this@SearchRepositoriesActivity,
+                        "\uD83D\uDE28 Wooops ${it.error}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
     }
 }
