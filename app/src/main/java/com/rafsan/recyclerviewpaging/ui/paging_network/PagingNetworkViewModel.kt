@@ -1,11 +1,11 @@
 /*
  * *
- *  * Created by Rafsan Ahmad on 10/11/21, 5:44 PM
+ *  * Created by Rafsan Ahmad on 10/14/21, 1:14 PM
  *  * Copyright (c) 2021 . All rights reserved.
  *
  */
 
-package com.rafsan.recyclerviewpaging.ui
+package com.rafsan.recyclerviewpaging.ui.paging_network
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -23,10 +23,10 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 /**
- * ViewModel for the [SearchRepositoriesActivity] screen.
+ * ViewModel for the [PagingFromNetworkActivity] screen.
  * The ViewModel works with the [GithubRepository] to get the data.
  */
-class SearchRepositoriesViewModel(
+class PagingNetworkViewModel(
     private val repository: GithubRepository,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -40,8 +40,6 @@ class SearchRepositoriesViewModel(
      * Processor of side effects from the UI which in turn feedback into [state]
      */
     val accept: (UiAction) -> Unit
-
-    var pagingType: String = PAGING_TYPE_NETWORK
 
     init {
         val initialQuery: String = savedStateHandle.get(LAST_SEARCH_QUERY) ?: DEFAULT_QUERY
@@ -95,58 +93,33 @@ class SearchRepositoriesViewModel(
     }
 
     private fun searchRepo(queryString: String): Flow<PagingData<UiModel>> {
-        if (pagingType == PAGING_TYPE_NETWORK_DB) {
-            return repository.getSearchResultStreamFromMediator(queryString)
-                .map { pagingData -> pagingData.map { UiModel.RepoItem(it) } }
-                .map {
-                    it.insertSeparators { before, after ->
-                        if (after == null) {
-                            // we're at the end of the list
-                            return@insertSeparators null
-                        }
+        return repository.getSearchResultStream(queryString)
+            .map { pagingData -> pagingData.map { UiModel.RepoItem(it) } }
+            .map {
+                it.insertSeparators { before, after ->
+                    if (after == null) {
+                        // we're at the end of the list
+                        return@insertSeparators null
+                    }
 
-                        if (before == null) {
-                            // we're at the beginning of the list
-                            return@insertSeparators UiModel.SeparatorItem("${after.roundedStarCount}0.000+ stars")
-                        }
-                        // check between 2 items
-                        if (before.roundedStarCount > after.roundedStarCount) {
-                            if (after.roundedStarCount >= 1) {
-                                UiModel.SeparatorItem("${after.roundedStarCount}0.000+ stars")
-                            } else {
-                                UiModel.SeparatorItem("< 10.000+ stars")
-                            }
+                    if (before == null) {
+                        // we're at the beginning of the list
+                        return@insertSeparators UiModel.SeparatorItem("${after.roundedStarCount}0.000+ stars")
+                    }
+                    // check between 2 items
+                    if (before.roundedStarCount > after.roundedStarCount) {
+                        if (after.roundedStarCount >= 1) {
+                            UiModel.SeparatorItem("${after.roundedStarCount}0.000+ stars")
                         } else {
-                            // no separator
-                            null
+                            UiModel.SeparatorItem("< 10.000+ stars")
                         }
+                    } else {
+                        // no separator
+                        null
                     }
                 }
-                .cachedIn(viewModelScope)
-        } else {
-            return repository.getSearchResultStream(queryString)
-                .map { pagingData -> pagingData.map { UiModel.RepoItem(it) } }
-                .map {
-                    it.insertSeparators { before, after ->
-                        if (after == null || before == null) {
-                            // we're at the end of the list
-                            return@insertSeparators null
-                        }
-                        // check between 2 items
-                        if (before.roundedStarCount > after.roundedStarCount) {
-                            if (after.roundedStarCount >= 1) {
-                                UiModel.SeparatorItem("${after.roundedStarCount}0.000+ stars")
-                            } else {
-                                UiModel.SeparatorItem("< 10.000+ stars")
-                            }
-                        } else {
-                            // no separator
-                            null
-                        }
-                    }
-                }
-                .cachedIn(viewModelScope)
-        }
+            }
+            .cachedIn(viewModelScope)
     }
 
     override fun onCleared() {

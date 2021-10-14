@@ -9,8 +9,6 @@ package com.rafsan.recyclerviewpaging.utils
 
 const val GITHUB_STARTING_PAGE_INDEX = 1
 const val NETWORK_PAGE_SIZE = 15
-const val PAGING_TYPE_NETWORK = "network"
-const val PAGING_TYPE_NETWORK_DB = "network_and_db"
 const val VISIBLE_THRESHOLD = 5
 const val LAST_SEARCH_QUERY: String = "last_search_query"
 const val DEFAULT_QUERY = "Android"

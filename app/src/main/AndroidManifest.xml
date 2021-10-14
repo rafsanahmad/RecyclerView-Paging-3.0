@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.SearchRepositoriesActivity" />
+        <activity android:name=".ui.paging_network.PagingFromNetworkActivity" />
+        <activity android:name=".ui.paging_network_db.PagingFromNetworkDbActivity" />
     </application>
 
 </manifest>

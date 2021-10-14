@@ -12,6 +12,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.savedstate.SavedStateRegistryOwner
 import com.rafsan.recyclerviewpaging.network.GithubRepository
+import com.rafsan.recyclerviewpaging.ui.paging_network.PagingNetworkViewModel
+import com.rafsan.recyclerviewpaging.ui.paging_network_db.PagingFromNetworkDbViewModel
 
 /**
  * Factory for ViewModels
@@ -26,9 +28,13 @@ class ViewModelFactory(
         modelClass: Class<T>,
         handle: SavedStateHandle
     ): T {
-        if (modelClass.isAssignableFrom(SearchRepositoriesViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(PagingNetworkViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return SearchRepositoriesViewModel(repository, handle) as T
+            return PagingNetworkViewModel(repository, handle) as T
+        }
+        if (modelClass.isAssignableFrom(PagingFromNetworkDbViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return PagingFromNetworkDbViewModel(repository, handle) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
