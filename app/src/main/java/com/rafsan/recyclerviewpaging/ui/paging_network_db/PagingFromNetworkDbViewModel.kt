@@ -98,7 +98,7 @@ class PagingFromNetworkDbViewModel(
     }
 
     private fun searchRepo(queryString: String): Flow<PagingData<UiModel>> =
-        repository.getSearchResultStream(queryString)
+        repository.getSearchResultStreamFromMediator(queryString)
             .map { pagingData -> pagingData.map { UiModel.RepoItem(it) } }
             .map {
                 it.insertSeparators { before, after ->
