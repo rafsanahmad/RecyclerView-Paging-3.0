@@ -14,7 +14,7 @@ import androidx.room.RoomDatabase
 import com.rafsan.recyclerviewpaging.model.Repo
 
 @Database(
-    entities = [Repo::class],
+    entities = [Repo::class, RemoteKeys::class],
     version = 1,
     exportSchema = false
 )
@@ -37,7 +37,7 @@ abstract class RepoDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context) =
             Room.databaseBuilder(
                 context.applicationContext,
-                RepoDatabase::class.java, "Github.db"
+                RepoDatabase::class.java, "github.db"
             )
                 .build()
     }

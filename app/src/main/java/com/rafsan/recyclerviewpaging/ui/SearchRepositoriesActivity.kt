@@ -24,10 +24,14 @@ import com.rafsan.recyclerviewpaging.ui.adapter.ReposAdapter
 import com.rafsan.recyclerviewpaging.ui.adapter.ReposLoadStateAdapter
 import com.rafsan.recyclerviewpaging.ui.data.UiAction
 import com.rafsan.recyclerviewpaging.ui.data.UiState
+import com.rafsan.recyclerviewpaging.utils.PAGING_TYPE_NETWORK
+import com.rafsan.recyclerviewpaging.utils.PAGING_TYPE_NETWORK_DB
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class SearchRepositoriesActivity : AppCompatActivity() {
+
+    var pagingType: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +39,7 @@ class SearchRepositoriesActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        pagingType = intent.getStringExtra("paging")
         val viewModel = ViewModelProvider(
             this, Injection.provideViewModelFactory(
                 context = this,
@@ -43,6 +48,7 @@ class SearchRepositoriesActivity : AppCompatActivity() {
         )
             .get(SearchRepositoriesViewModel::class.java)
 
+        viewModel.pagingType = pagingType ?: PAGING_TYPE_NETWORK
         // add dividers between RecyclerView's row items
         val decoration = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         binding.list.addItemDecoration(decoration)
@@ -73,6 +79,7 @@ class SearchRepositoriesActivity : AppCompatActivity() {
         )
         bindList(
             repoAdapter = repoAdapter,
+            header = ReposLoadStateAdapter { repoAdapter.retry() },
             uiState = uiState,
             onScrollChanged = uiActions
         )
@@ -118,6 +125,7 @@ class SearchRepositoriesActivity : AppCompatActivity() {
 
     private fun ActivitySearchRepositoriesBinding.bindList(
         repoAdapter: ReposAdapter,
+        header: ReposLoadStateAdapter,
         uiState: StateFlow<UiState>,
         onScrollChanged: (UiAction.Scroll) -> Unit
     ) {
@@ -160,30 +168,68 @@ class SearchRepositoriesActivity : AppCompatActivity() {
                 }
         }
 
-        lifecycleScope.launch {
-            repoAdapter.loadStateFlow.collect { loadState ->
-                val isListEmpty =
-                    loadState.refresh is LoadState.NotLoading && repoAdapter.itemCount == 0
-                // show empty list
-                emptyList.isVisible = isListEmpty
-                // Only show the list if refresh succeeds.
-                list.isVisible = !isListEmpty
-                // Show loading spinner during initial load or refresh.
-                progressBar.isVisible = loadState.source.refresh is LoadState.Loading
-                // Show the retry state if initial load or refresh fails.
-                retryButton.isVisible = loadState.source.refresh is LoadState.Error
+        when (pagingType) {
+            PAGING_TYPE_NETWORK -> lifecycleScope.launch {
+                repoAdapter.loadStateFlow.collect { loadState ->
+                    val isListEmpty =
+                        loadState.refresh is LoadState.NotLoading && repoAdapter.itemCount == 0
+                    // show empty list
+                    emptyList.isVisible = isListEmpty
+                    // Only show the list if refresh succeeds.
+                    list.isVisible = !isListEmpty
+                    // Show loading spinner during initial load or refresh.
+                    progressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                    // Show the retry state if initial load or refresh fails.
+                    retryButton.isVisible = loadState.source.refresh is LoadState.Error
 
-                // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
-                val errorState = loadState.source.append as? LoadState.Error
-                    ?: loadState.source.prepend as? LoadState.Error
-                    ?: loadState.append as? LoadState.Error
-                    ?: loadState.prepend as? LoadState.Error
-                errorState?.let {
-                    Toast.makeText(
-                        this@SearchRepositoriesActivity,
-                        "\uD83D\uDE28 Wooops ${it.error}",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
+                    val errorState = loadState.source.append as? LoadState.Error
+                        ?: loadState.source.prepend as? LoadState.Error
+                        ?: loadState.append as? LoadState.Error
+                        ?: loadState.prepend as? LoadState.Error
+                    errorState?.let {
+                        Toast.makeText(
+                            this@SearchRepositoriesActivity,
+                            "\uD83D\uDE28 Wooops ${it.error}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+
+            PAGING_TYPE_NETWORK_DB -> lifecycleScope.launch {
+                repoAdapter.loadStateFlow.collect { loadState ->
+                    // Show a retry header if there was an error refreshing, and items were previously
+                    // cached OR default to the default prepend state
+                    header.loadState = loadState.mediator
+                        ?.refresh
+                        ?.takeIf { it is LoadState.Error && repoAdapter.itemCount > 0 }
+                        ?: loadState.prepend
+
+                    val isListEmpty =
+                        loadState.refresh is LoadState.NotLoading && repoAdapter.itemCount == 0
+                    // show empty list
+                    emptyList.isVisible = isListEmpty
+                    // Only show the list if refresh succeeds, either from the the local db or the remote.
+                    list.isVisible =
+                        loadState.source.refresh is LoadState.NotLoading || loadState.mediator?.refresh is LoadState.NotLoading
+                    // Show loading spinner during initial load or refresh.
+                    progressBar.isVisible = loadState.mediator?.refresh is LoadState.Loading
+                    // Show the retry state if initial load or refresh fails.
+                    retryButton.isVisible =
+                        loadState.mediator?.refresh is LoadState.Error && repoAdapter.itemCount == 0
+                    // Toast on any error, regardless of whether it came from RemoteMediator or PagingSource
+                    val errorState = loadState.source.append as? LoadState.Error
+                        ?: loadState.source.prepend as? LoadState.Error
+                        ?: loadState.append as? LoadState.Error
+                        ?: loadState.prepend as? LoadState.Error
+                    errorState?.let {
+                        Toast.makeText(
+                            this@SearchRepositoriesActivity,
+                            "\uD83D\uDE28 Wooops ${it.error}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
             }
         }
