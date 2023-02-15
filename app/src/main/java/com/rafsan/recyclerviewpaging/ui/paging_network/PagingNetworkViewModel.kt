@@ -18,7 +18,11 @@ import com.rafsan.recyclerviewpaging.network.GithubRepository
 import com.rafsan.recyclerviewpaging.ui.data.UiAction
 import com.rafsan.recyclerviewpaging.ui.data.UiModel
 import com.rafsan.recyclerviewpaging.ui.data.UiState
-import com.rafsan.recyclerviewpaging.utils.*
+import com.rafsan.recyclerviewpaging.utils.DEFAULT_QUERY
+import com.rafsan.recyclerviewpaging.utils.LAST_QUERY_SCROLLED
+import com.rafsan.recyclerviewpaging.utils.LAST_SEARCH_QUERY
+import com.rafsan.recyclerviewpaging.utils.roundedStarCount
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -26,6 +30,7 @@ import kotlinx.coroutines.launch
  * ViewModel for the [PagingFromNetworkActivity] screen.
  * The ViewModel works with the [GithubRepository] to get the data.
  */
+@OptIn(ExperimentalCoroutinesApi::class)
 class PagingNetworkViewModel(
     private val repository: GithubRepository,
     private val savedStateHandle: SavedStateHandle
