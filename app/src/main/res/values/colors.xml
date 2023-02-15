@@ -19,4 +19,5 @@
     <color name="greyAlpha">#55999999</color>
     <color name="separatorBackground">#AAAAAA</color>
     <color name="separatorText">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
 </resources>

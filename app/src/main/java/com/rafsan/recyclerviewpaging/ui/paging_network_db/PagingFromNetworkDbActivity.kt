@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -22,12 +21,15 @@ import com.rafsan.recyclerviewpaging.Injection
 import com.rafsan.recyclerviewpaging.databinding.ActivitySearchRepositoriesBinding
 import com.rafsan.recyclerviewpaging.ui.adapter.ReposAdapter
 import com.rafsan.recyclerviewpaging.ui.adapter.ReposLoadStateAdapter
+import com.rafsan.recyclerviewpaging.ui.base.BaseActivity
 import com.rafsan.recyclerviewpaging.ui.data.UiAction
 import com.rafsan.recyclerviewpaging.ui.data.UiState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class PagingFromNetworkDbActivity : AppCompatActivity() {
+class PagingFromNetworkDbActivity : BaseActivity() {
+
+    override fun getToolbarTitle() = "Paging From Network & DB"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -194,7 +196,7 @@ class PagingFromNetworkDbActivity : AppCompatActivity() {
                 errorState?.let {
                     Toast.makeText(
                         this@PagingFromNetworkDbActivity,
-                        "\uD83D\uDE28 Wooops ${it.error}",
+                        "\uD83D\uDE28 Whoops ${it.error}",
                         Toast.LENGTH_LONG
                     ).show()
                 }

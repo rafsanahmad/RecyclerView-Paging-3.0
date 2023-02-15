@@ -22,9 +22,11 @@ import com.rafsan.recyclerviewpaging.utils.DEFAULT_QUERY
 import com.rafsan.recyclerviewpaging.utils.LAST_QUERY_SCROLLED
 import com.rafsan.recyclerviewpaging.utils.LAST_SEARCH_QUERY
 import com.rafsan.recyclerviewpaging.utils.roundedStarCount
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class PagingFromNetworkDbViewModel(
     private val repository: GithubRepository,
     private val savedStateHandle: SavedStateHandle
